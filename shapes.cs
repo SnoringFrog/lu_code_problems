@@ -13,7 +13,11 @@ public class Shapes {
 		Tuple.Create<string, Func<int, string[]>>("Isoceles Triangle", formIsoTriangle),
 		Tuple.Create<string, Func<int, string[]>>("Equilateral Triangle", formEquTriangle),
 		Tuple.Create<string, Func<int, string[]>>("Diamond", formDiamond),
-
+		Tuple.Create<string, Func<int, string[]>>("Hexagon", nada),
+		Tuple.Create<string, Func<int, string[]>>("Octogon", nada),
+		Tuple.Create<string, Func<int, string[]>>("V", nada),
+		Tuple.Create<string, Func<int, string[]>>("X", nada),
+		Tuple.Create<string, Func<int, string[]>>("Diamond", nada),
 	};
 
 	public static string[] nada(int a){
