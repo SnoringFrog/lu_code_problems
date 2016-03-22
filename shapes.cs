@@ -8,7 +8,7 @@ public class Shapes {
 	readonly static List<Tuple<string, Func<int, string[]>>> SUPPORTED_SHAPES = new List<Tuple<string, Func<int, string[]>>> 
 	{
 		Tuple.Create<string, Func<int, string[]>>("Square", formSquare),
-		Tuple.Create<string, Func<int, string[]>>("*Rectangle", nada),
+		Tuple.Create<string, Func<int, string[]>>("Rectangle", formRectangle),
 		Tuple.Create<string, Func<int, string[]>>("Parallelogram", formParallelogram),
 		Tuple.Create<string, Func<int, string[]>>("Isoceles Triangle", formIsoTriangle),
 		Tuple.Create<string, Func<int, string[]>>("Equilateral Triangle", formEquTriangle),
@@ -94,6 +94,16 @@ public class Shapes {
 		}
 
 		return square;
+	}
+
+	static string[] formRectangle(int height){
+		string[] rectangle = new string[height];
+
+		for (int c=0; c<height; c++){
+			rectangle[c] = generateLine(height*2);
+		}
+
+		return rectangle;
 	}
 
 	static string[] formParallelogram(int height){
