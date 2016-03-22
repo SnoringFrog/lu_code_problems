@@ -86,7 +86,7 @@ public class Shapes {
 		
 	}
 
-	static string[] prepareSquare(int height = 3){
+	static string[] formSquare(int height){
 		string[] square = new string[height];
 		
 		for (int c=0; c<height; c++){
@@ -106,15 +106,29 @@ public class Shapes {
 		return isoTriangle;
 	}
 
-	static void intro(){
-		int c = 1;
-		foreach (string shape in SUPPORTED_SHAPES) {
-			Console.WriteLine("("+c+") "+shape);
-			c++;
+	static string[] formEquTriangle(int height){
+		string[] equTriangle = formIsoTriangle(height);
+
+		for (int c=0; c<height; c++){
+			equTriangle[c] = new string (' ',height-1-c) + equTriangle[c]; 
 		}
-		Console.WriteLine("Enter the number of the shape to draw:");
+
+		return equTriangle;
 	}
-	
+
+	static string[] formDiamond(int height){
+		int halfHeight = (int)Math.Ceiling(height/2.0);
+		string[] diamond = new string[height];
+		string[] triangle = formEquTriangle(halfHeight); 
+		
+		for (int c=0; c<halfHeight; c++){
+			diamond[c] = triangle[c];
+			diamond[height-1-c] = triangle[c];
+		}
+
+		return diamond;
+	}
+
 	static string generateLine(int length, string filler=FILLER_CHAR, bool centered=false){
 		string line;
 
