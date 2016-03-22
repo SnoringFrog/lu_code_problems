@@ -96,7 +96,17 @@ public class Shapes {
 		return square;
 	}
 
-	static string[] prepareIsoTriangle(int height){
+	static string[] formParallelogram(int height){
+		string[] parallelogram = formSquare(height);
+
+		for (int c=0; c<height; c++){
+			parallelogram[c] = new string (' ',height-1-c) + parallelogram[c];
+		}
+
+		return parallelogram;
+	}
+
+	static string[] formIsoTriangle(int height){
 		string[] isoTriangle = new string[height];
 
 		for (int c=0; c<height; c++){
