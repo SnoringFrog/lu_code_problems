@@ -22,8 +22,9 @@ public class Shapes {
 	}
 
 	public static void Main(string[] args){
-		int? shapeType = null;
-		int? shapeHeight = null;
+		int shapeType = 1;
+		int shapeHeight = 4;
+		bool drawAnotherShape = true;
 
 		while (drawAnotherShape) {
 			// get shape type
@@ -32,13 +33,12 @@ public class Shapes {
 			// get shape height
 			shapeHeight = readInt("How many lines tall should it be? (enter a positive integer): ", 1);
 
+			// generate shape
+			string[] shape = SUPPORTED_SHAPES[shapeType-1].Item2(shapeHeight);
 
 
-		// generate shape
-		string[] shape = prepareShape(shapeType ?? 1, shapeHeight ?? 4);
-		shape = test.Item2(5);
-		// get display text (warn against chopping for long messages
-		//	ask for additional labels
+			// get display text (warn against chopping for long messages
+			//	ask for additional labels
 
 			// draw shape
 			draw(shape);
