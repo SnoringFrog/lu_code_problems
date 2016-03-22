@@ -25,14 +25,14 @@ public class Shapes {
 		int? shapeType = null;
 		int? shapeHeight = null;
 
-		
+		while (drawAnotherShape) {
+			// get shape type
+			shapeType = readInt(intro(), 1, SUPPORTED_SHAPES.Count);
 
-		// display shape options with corresponding numbers
-		shapeType = readShapeType();
+			// get shape height
+			shapeHeight = readInt("How many lines tall should it be? (enter a positive integer): ", 1);
 
 
-		// get requested height (validate for int and against minimum)
-		shapeHeight = readHeight();
 
 		// generate shape
 		string[] shape = prepareShape(shapeType ?? 1, shapeHeight ?? 4);
@@ -40,66 +40,50 @@ public class Shapes {
 		// get display text (warn against chopping for long messages
 		//	ask for additional labels
 
-		// draw shape
-		draw(shape);
+			// draw shape
+			draw(shape);
 
-		// loop
-		Console.WriteLine("Draw another shape? (y/n)");
-		// loop on y, exit otherwise
+			// loop
+			Console.WriteLine("Draw another shape? (y/n)");
+			string answer = Console.ReadLine().ToLower();
+			if (answer != "y" &&  answer != "yes"){
+				drawAnotherShape = false;
+			} else { Console.WriteLine("");	}
 		
+		}
 		Console.WriteLine("Still not done yet...");
 	}
 
-	static int readShapeType(){
-		int shapeType;
-		string inputType;
-		// (square, diamond, equilateral triangle, isoceles triangle, 
-		// rectangle, parallelogram, hexagon, octogon, X, V, line
-
-		do {
-			intro(); //replace this with an array/list and some display based on that?
-			inputType = Console.ReadLine();
-		} while (!validatePositiveInt(inputType, out shapeType) || shapeType > SUPPORTED_SHAPES.Length);
-
-		return shapeType;
+	static string intro(){
+		int c = 1;
+		string introMsg ="";
+		foreach (var shape in SUPPORTED_SHAPES) {
+			introMsg+="("+c+") "+shape.Item1+"\n";
+			c++;
+		}
+		introMsg+="\nEnter the number of the shape to draw: ";
+		return introMsg;
 	}
 	
 
-	static int readHeight(){
-		int shapeHeight;
-		string inputHeight;
-
+	static int readInt(string message, int min = int.MinValue, int max = int.MaxValue){
+		string input;
+		int number;
 		do {
-			Console.WriteLine("How tall should the shape be? (enter a positive integer)");
-			inputHeight = Console.ReadLine();
-		} while (!validatePositiveInt(inputHeight, out shapeHeight) || shapeHeight < 1);
-		// recommend a max value based on console width?
-
-		return shapeHeight;
+			Console.Write(message);
+			input = Console.ReadLine();
+		} while (!validateIntInRange(input, min, max, out number));
+		return number;
 	}
 
-	static bool validatePositiveInt(string numberString, out int number){
+	static bool validateIntInRange (string numberString, int min, int max, out int number){
 		if (int.TryParse(numberString.Trim(), out number)){
-			if (number > 0) {
+			if (number >= min && number <= max){
 				return true;
 			}
-		} 
-		return false;
-	}
-
-	static string[] prepareShape(int type, int height){
-		Console.WriteLine("prepareShape IS STILL USING TESTING ARUGMENTS");
-		string[] shape;
-
-		switch (type) {
-			default:
-				shape = prepareSquare(height);
-				break;
-
 		}
-
-		return shape;
-	
+		return false;
+		
 	}
 
 	static string[] prepareSquare(int height = 3){
