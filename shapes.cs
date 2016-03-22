@@ -4,8 +4,22 @@ using System.Linq;
 
 public class Shapes {
 	const string FILLER_CHAR = "#";
-	readonly static string[] SUPPORTED_SHAPES = {"Square", "Rectangle", "Parallelogram", "Triangle", "Diamond"};
-	static Tuple<string, Func<int, string[]>> test  = Tuple.Create<string, Func<int, string[]>>("Square", prepareSquare);
+	//readonly static string[] SUPPORTED_SHAPES = {"Square", "Rectangle", "Parallelogram", "Triangle", "Diamond"};
+	readonly static List<Tuple<string, Func<int, string[]>>> SUPPORTED_SHAPES = new List<Tuple<string, Func<int, string[]>>> 
+	{
+		Tuple.Create<string, Func<int, string[]>>("Square", formSquare),
+		Tuple.Create<string, Func<int, string[]>>("*Rectangle", nada),
+		Tuple.Create<string, Func<int, string[]>>("Parallelogram", formParallelogram),
+		Tuple.Create<string, Func<int, string[]>>("Isoceles Triangle", formIsoTriangle),
+		Tuple.Create<string, Func<int, string[]>>("Equilateral Triangle", formEquTriangle),
+		Tuple.Create<string, Func<int, string[]>>("Diamond", formDiamond),
+
+	};
+
+	public static string[] nada(int a){
+		Console.WriteLine("ain't made this yet");
+		return new string[0];
+	}
 
 	public static void Main(string[] args){
 		int? shapeType = null;
@@ -49,6 +63,7 @@ public class Shapes {
 
 		return shapeType;
 	}
+	
 
 	static int readHeight(){
 		int shapeHeight;
