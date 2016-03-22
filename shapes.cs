@@ -28,21 +28,39 @@ public class Shapes {
 	public static void Main(string[] args){
 		int shapeType = 1;
 		int shapeHeight = 4;
+		string label;
+		int labelLine;
 		bool drawAnotherShape = true;
 
 		while (drawAnotherShape) {
 			// get shape type
-			shapeType = readInt(intro(), 1, SUPPORTED_SHAPES.Count);
+			shapeType = readInt(intro(), min:1, max:SUPPORTED_SHAPES.Count);
 
 			// get shape height
-			shapeHeight = readInt("How many lines tall should it be? (enter a positive integer): ", 1);
+			shapeHeight = readInt("How many lines tall should it be? (enter a positive integer): ", min:1);
 
 			// generate shape
 			string[] shape = SUPPORTED_SHAPES[shapeType-1].Item2(shapeHeight);
 
 
 			// get display text (warn against chopping for long messages
+			Console.Write("What label should be added? (default: LU): ");
+			label = Console.ReadLine();
+			if (string.IsNullOrEmpty(label)){
+				label = "LU";
+			}
+
+
+			string labelLineMsg = "What row should the label be on? (default: 4): ";
+			labelLine = readInt(labelLineMsg, default:4, min:1);
+
+			// edit shape[labelLine-1] to input the label
+			//	count #'s in line, calculate middle and needed offset to center label
+			//	if label is too long, just replace the whole set of #'s
+			
+			
 			//	ask for additional labels
+			//	allow labels to overwrite old ones, if someone wants that for some reason
 
 			// draw shape
 			draw(shape);
@@ -76,6 +94,19 @@ public class Shapes {
 		do {
 			Console.Write(message);
 			input = Console.ReadLine();
+		} while (!validateIntInRange(input, min, max, out number));
+		return number;
+	}
+
+	static int readInt(string message, int default_num, int min = int.MinValue, int max = int.MaxValue){
+		string input;
+		int number = default_num;
+		do {
+			Console.Write(message);
+			input = Console.ReadLine();
+			if (string.IsNullOrEmpty(input)){
+				break;
+			}
 		} while (!validateIntInRange(input, min, max, out number));
 		return number;
 	}
