@@ -14,7 +14,7 @@ public class Shapes {
 		Tuple.Create<string, Func<int, string[]>, int>("Equilateral Triangle", formEquTriangle, 2),
 
 		Tuple.Create<string, Func<int, string[]>, int>("Diamond", formDiamond, 3),
-		Tuple.Create<string, Func<int, string[]>, int>("*Hexagon (odd height) or Octogon (even height)", formHexagon, 3),
+		Tuple.Create<string, Func<int, string[]>, int>("Hexagon (odd height) or Octogon (even height)", formHexagon, 3),
 	};
 
 	public static string[] nada(int a){
@@ -75,7 +75,6 @@ public class Shapes {
 			} else { Console.WriteLine("");	}
 		
 		}
-		Console.WriteLine("Still not done yet...");
 	}
 
 	static string intro(){
