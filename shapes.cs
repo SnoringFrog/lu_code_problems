@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Shapes {
-	const string FILLER_CHAR = "#";
+	const char FILLER_CHAR = '#';
 	//readonly static string[] SUPPORTED_SHAPES = {"Square", "Rectangle", "Parallelogram", "Triangle", "Diamond"};
-	readonly static List<Tuple<string, Func<int, string[]>>> SUPPORTED_SHAPES = new List<Tuple<string, Func<int, string[]>>> 
+	readonly static List<Tuple<string, Func<int, string[]>, int>> SUPPORTED_SHAPES = new List<Tuple<string, Func<int, string[]>, int>> 
 	{
-		Tuple.Create<string, Func<int, string[]>>("Square", formSquare),
-		Tuple.Create<string, Func<int, string[]>>("Rectangle", formRectangle),
-		Tuple.Create<string, Func<int, string[]>>("Parallelogram", formParallelogram),
-		Tuple.Create<string, Func<int, string[]>>("Isoceles Triangle", formIsoTriangle),
-		Tuple.Create<string, Func<int, string[]>>("Equilateral Triangle", formEquTriangle),
-		Tuple.Create<string, Func<int, string[]>>("Diamond", formDiamond),
-		Tuple.Create<string, Func<int, string[]>>("Hexagon", nada),
-		Tuple.Create<string, Func<int, string[]>>("Octogon", nada),
-		Tuple.Create<string, Func<int, string[]>>("V", nada),
-		Tuple.Create<string, Func<int, string[]>>("X", nada),
-		Tuple.Create<string, Func<int, string[]>>("Diamond", nada),
+		Tuple.Create<string, Func<int, string[]>, int>("Square", formSquare, 1),
+		Tuple.Create<string, Func<int, string[]>, int>("Rectangle", formRectangle, 1),
+		Tuple.Create<string, Func<int, string[]>, int>("Parallelogram", formParallelogram, 2),
+		Tuple.Create<string, Func<int, string[]>, int>("Isoceles Triangle", formIsoTriangle, 2),
+		Tuple.Create<string, Func<int, string[]>, int>("Equilateral Triangle", formEquTriangle, 2),
+
+		Tuple.Create<string, Func<int, string[]>, int>("Diamond", formDiamond, 3),
+		Tuple.Create<string, Func<int, string[]>, int>("*Hexagon (odd height) or Octogon (even height)", formHexagon, 3),
 	};
 
 	public static string[] nada(int a){
@@ -26,48 +23,53 @@ public class Shapes {
 	}
 
 	public static void Main(string[] args){
-		int shapeType = 1;
-		int shapeHeight = 4;
-		string label;
-		int labelLine;
-		bool drawAnotherShape = true;
+		int shapeType = 1; 
+		int shapeHeight = 4; // desired shape height
+		int minHeight; // min height for selected shape
+		string label; // label text
+		string labelLineMsg = "What row should the label be on? (default: 4): ";
+		int labelLine; // line # for label
+		bool drawAnotherShape = true; // main program loop control
+		string answer; // answers to loop questions
 
 		while (drawAnotherShape) {
+			bool addLabels = true; // label loop control
 			// get shape type
 			shapeType = readInt(intro(), min:1, max:SUPPORTED_SHAPES.Count);
 
 			// get shape height
-			shapeHeight = readInt("How many lines tall should it be? (enter a positive integer): ", min:1);
+			minHeight = SUPPORTED_SHAPES[shapeType-1].Item3;
+			shapeHeight = readInt("How many lines tall should it be? (min: "+minHeight+"): ", min:minHeight);
 
 			// generate shape
 			string[] shape = SUPPORTED_SHAPES[shapeType-1].Item2(shapeHeight);
 
+			while (addLabels) {
+				// get display text (warn against chopping for long messages
+				Console.Write("What label should be added? (default: LU): ");
+				label = Console.ReadLine();
+				if (string.IsNullOrEmpty(label)){
+					label = "LU";
+				}
 
-			// get display text (warn against chopping for long messages
-			Console.Write("What label should be added? (default: LU): ");
-			label = Console.ReadLine();
-			if (string.IsNullOrEmpty(label)){
-				label = "LU";
+				labelLine = readInt(labelLineMsg, defaultNum:4, min:1);
+				shape = setLabel(shape, label, labelLine);
+
+				//	ask for additional labels
+				//	new labels can override old ones
+				Console.Write("Add another label? (y/n)" );
+				answer = Console.ReadLine().ToLower();
+				if (answer != "y" &&  answer != "yes"){
+					addLabels = false;
+				} else { Console.WriteLine("");	}
 			}
-
-
-			string labelLineMsg = "What row should the label be on? (default: 4): ";
-			labelLine = readInt(labelLineMsg, default:4, min:1);
-
-			// edit shape[labelLine-1] to input the label
-			//	count #'s in line, calculate middle and needed offset to center label
-			//	if label is too long, just replace the whole set of #'s
-			
-			
-			//	ask for additional labels
-			//	allow labels to overwrite old ones, if someone wants that for some reason
 
 			// draw shape
 			draw(shape);
 
-			// loop
-			Console.WriteLine("Draw another shape? (y/n)");
-			string answer = Console.ReadLine().ToLower();
+			// loop control
+			Console.Write("Draw another shape? (y/n) ");
+			answer = Console.ReadLine().ToLower();
 			if (answer != "y" &&  answer != "yes"){
 				drawAnotherShape = false;
 			} else { Console.WriteLine("");	}
@@ -98,9 +100,9 @@ public class Shapes {
 		return number;
 	}
 
-	static int readInt(string message, int default_num, int min = int.MinValue, int max = int.MaxValue){
+	static int readInt(string message, int defaultNum, int min = int.MinValue, int max = int.MaxValue){
 		string input;
-		int number = default_num;
+		int number = defaultNum;
 		do {
 			Console.Write(message);
 			input = Console.ReadLine();
@@ -184,17 +186,63 @@ public class Shapes {
 		return diamond;
 	}
 
-	static string generateLine(int length, string filler=FILLER_CHAR, bool centered=false){
-		string line;
-
-		if (centered) {
-			line = "NOT IMPLEMENTED";
-		} else {
-			line = string.Concat(Enumerable.Repeat(FILLER_CHAR+" ",length)).Trim();	
-
+	static string[] formHexagon(int height){
+		string[] hexagon = new string[height];
+		string[] diamond = formDiamond(height+4);
+		for (int c=2; c<height+2;c++){
+			hexagon[c-2] = diamond[c]; 
 		}
+			
+		return hexagon;
+	}
 
-		return line;
+	static string generateLine(int length){
+		return string.Concat(Enumerable.Repeat(FILLER_CHAR+" ",length)).Trim();	
+	}
+
+	static string[] setLabel(string[] shape, string label, int labelLine){
+		if (labelLine > shape.Length) return shape; // label is off the shape, no change needed
+
+		string targetLine = shape[labelLine-1];
+
+		int targetLineFillerChars=0;
+		foreach (char c in targetLine) {
+			if (c == FILLER_CHAR) {
+				targetLineFillerChars++;
+			}
+		}
+		
+		int targetIndex = 1;
+		int labelLength = label.Length;
+		if (labelLength < targetLineFillerChars) { // need to calculate the middle and the offset
+			int targetMiddle = (int)Math.Ceiling(targetLineFillerChars/2.0);
+	 		int offset = labelLength - (int)Math.Ceiling((labelLength + ((labelLength+1) % 2)) / 2.0);
+			targetIndex = targetMiddle - offset;
+		} else { // truncate label to proper size
+			label = label.Substring(0, targetLineFillerChars);	
+		}
+		
+		int count;
+		foreach (char c in label) {
+			// find targetIndex'th non-space char, replace with c, shift target
+			count = 0;
+			for (int d = 0; d<targetLine.Length; d++){
+				if (targetLine[d] != ' ') {
+					count++;
+					if (count == targetIndex) {
+						targetIndex++;
+						char[] chars = targetLine.ToCharArray();
+						chars[d] = c;
+						targetLine = new string(chars);
+						break;
+					}
+				}
+			}
+						
+		}
+		shape[labelLine-1] = targetLine;
+
+		return shape;
 	}
 
 	static void draw(string[] shape){
